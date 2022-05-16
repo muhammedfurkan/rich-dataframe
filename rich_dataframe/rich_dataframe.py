@@ -91,11 +91,7 @@ class DataFramePrettify:
         for row in self.rows:
             with beat(self.delay_time):
 
-                if self.first_cols:
-                    row = row[: self.col_limit]
-                else:
-                    row = row[-self.col_limit :]
-
+                row = row[: self.col_limit] if self.first_cols else row[-self.col_limit :]
                 row = [str(item) for item in row]
                 self.table.add_row(*list(row))
 
@@ -149,15 +145,8 @@ class DataFramePrettify:
                 self.table.width = None
 
     def _add_caption(self):
-        if self.first_rows:
-            row_text = "first"
-        else:
-            row_text = "last"
-        if self.first_cols:
-            col_text = "first"
-        else:
-            col_text = "last"
-
+        row_text = "first" if self.first_rows else "last"
+        col_text = "first" if self.first_cols else "last"
         with beat(self.delay_time):
             self.table.caption = f"Only the {row_text} {self.row_limit} rows and the {col_text} {self.col_limit} columns is shown here."
         with beat(self.delay_time):
@@ -211,7 +200,7 @@ def prettify(
     clear_console: bool, optional
         Clear the console before priting the table, by default True. If this is set to false the previous console input/output is maintained
     """
-    if isinstance(df, pd.DataFrame) or isinstance(df, pd.DataFrame):
+    if isinstance(df, pd.DataFrame):
         DataFramePrettify(
             df, row_limit, col_limit, first_rows, first_cols, delay_time,clear_console
         ).prettify()
